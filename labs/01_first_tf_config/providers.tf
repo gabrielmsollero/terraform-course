@@ -11,4 +11,10 @@ terraform {
 provider "aws" {
   region  = "us-east-1"
   profile = "terraform"
+  default_tags {
+    tags = {
+      Managed_By = "Terraform"
+      Project    = "Terraform Training"
+    }
+  }
 }
