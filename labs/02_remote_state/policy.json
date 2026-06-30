@@ -1,0 +1,29 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Action": ["s3:ListBucket"],
+      "Resource": ["arn:aws:s3:::gabriel-remote-state-test-bucket"],
+      "Condition": {
+        "StringEquals": {
+          "s3:prefix": "prd/terraform.tfstate"
+        }
+      }
+    },
+    {
+      "Effect": "Allow",
+      "Action": ["s3:PutObject", "s3:GetObject"],
+      "Resource": [
+        "arn:aws:s3:::gabriel-remote-state-test-bucket/prd/terraform.tfstate"
+      ]
+    },
+    {
+      "Effect": "Allow",
+      "Action": ["s3:PutObject", "s3:GetObject", "s3:DeleteObject"],
+      "Resource": [
+        "arn:aws:s3:::gabriel-remote-state-test-bucket/prd/terraform.tfstate.tflock"
+      ]
+    }
+  ]
+}
