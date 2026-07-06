@@ -1,17 +1,35 @@
+data "aws_region" "current" {}
+
+locals {
+  tags = {
+    Environment = var.environment
+    Project     = "terraform-improved-demo"
+    Owner       = "infrastructure-team"
+    CostCenter  = "cc-1234"
+    Region      = data.aws_region.current.region
+    ManagedBy   = "terraform"
+    Tier        = "public"
+    NewTag      = "hello world!"
+  }
+
+  name_prefix = var.environment
+}
+
 # Static configuration with repetitive elements
 resource "aws_vpc" "main" {
   cidr_block           = "10.0.0.0/16"
   enable_dns_hostnames = true
   enable_dns_support   = true
 
+  # option 1
   tags = {
-    Name        = "production-vpc-us-east-1"
-    Environment = "production"
-    Project     = "terraform-demo"
-    Owner       = "infrastructure-team"
-    CostCenter  = "cc-1234"
-    Region      = "us-east-1"
-    ManagedBy   = "terraform"
+    Name        = "${local.name_prefix}-vpc-${data.aws_region.current.region}"
+    Environment = local.tags.Environment
+    Project     = local.tags.Project
+    Owner       = local.tags.Owner
+    CostCenter  = local.tags.CostCenter
+    Region      = local.tags.Region
+    ManagedBy   = local.tags.ManagedBy
   }
 }
 
@@ -21,16 +39,10 @@ resource "aws_subnet" "public_a" {
   availability_zone       = "us-east-1a"
   map_public_ip_on_launch = true
 
-  tags = {
-    Name        = "production-public-subnet-us-east-1a"
-    Environment = "production"
-    Project     = "terraform-demo"
-    Owner       = "infrastructure-team"
-    CostCenter  = "cc-1234"
-    Region      = "us-east-1"
-    ManagedBy   = "terraform"
-    Tier        = "public"
-  }
+  # option 2
+  tags = merge(local.tags, {
+    Name = "${local.name_prefix}-public-subnet-us-east-1a"
+  })
 }
 
 resource "aws_subnet" "public_b" {
@@ -40,14 +52,13 @@ resource "aws_subnet" "public_b" {
   map_public_ip_on_launch = true
 
   tags = {
-    Name        = "production-public-subnet-us-east-1b"
-    Environment = "production"
-    Project     = "terraform-demo"
-    Owner       = "infrastructure-team"
-    CostCenter  = "cc-1234"
-    Region      = "us-east-1"
-    ManagedBy   = "terraform"
-    Tier        = "public"
+    Name        = "${local.name_prefix}-public-subnet-us-east-1b"
+    Environment = local.tags.Environment
+    Project     = local.tags.Project
+    Owner       = local.tags.Owner
+    CostCenter  = local.tags.CostCenter
+    Region      = local.tags.Region
+    ManagedBy   = local.tags.ManagedBy
   }
 }
 
@@ -58,14 +69,13 @@ resource "aws_subnet" "private_a" {
   map_public_ip_on_launch = false
 
   tags = {
-    Name        = "production-private-subnet-us-east-1a"
-    Environment = "production"
-    Project     = "terraform-demo"
-    Owner       = "infrastructure-team"
-    CostCenter  = "cc-1234"
-    Region      = "us-east-1"
-    ManagedBy   = "terraform"
-    Tier        = "private"
+    Name        = "${local.name_prefix}-private-subnet-us-east-1a"
+    Environment = local.tags.Environment
+    Project     = local.tags.Project
+    Owner       = local.tags.Owner
+    CostCenter  = local.tags.CostCenter
+    Region      = local.tags.Region
+    ManagedBy   = local.tags.ManagedBy
   }
 }
 
@@ -76,19 +86,18 @@ resource "aws_subnet" "private_b" {
   map_public_ip_on_launch = false
 
   tags = {
-    Name        = "production-private-subnet-us-east-1b"
-    Environment = "production"
-    Project     = "terraform-demo"
-    Owner       = "infrastructure-team"
-    CostCenter  = "cc-1234"
-    Region      = "us-east-1"
-    ManagedBy   = "terraform"
-    Tier        = "private"
+    Name        = "${local.name_prefix}-private-subnet-us-east-1b"
+    Environment = local.tags.Environment
+    Project     = local.tags.Project
+    Owner       = local.tags.Owner
+    CostCenter  = local.tags.CostCenter
+    Region      = local.tags.Region
+    ManagedBy   = local.tags.ManagedBy
   }
 }
 
 resource "aws_security_group" "web" {
-  name        = "production-web-sg"
+  name        = "${local.name_prefix}-web-sg"
   description = "Allow web traffic"
   vpc_id      = aws_vpc.main.id
 
@@ -114,12 +123,12 @@ resource "aws_security_group" "web" {
   }
 
   tags = {
-    Name        = "production-web-sg"
-    Environment = "production"
-    Project     = "terraform-demo"
-    Owner       = "infrastructure-team"
-    CostCenter  = "cc-1234"
-    Region      = "us-east-1"
-    ManagedBy   = "terraform"
+    Name        = "${local.name_prefix}-web-sg"
+    Environment = local.tags.Environment
+    Project     = local.tags.Project
+    Owner       = local.tags.Owner
+    CostCenter  = local.tags.CostCenter
+    Region      = local.tags.Region
+    ManagedBy   = local.tags.ManagedBy
   }
 }
