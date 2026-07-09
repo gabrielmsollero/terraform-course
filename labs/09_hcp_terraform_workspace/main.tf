@@ -19,6 +19,7 @@ resource "aws_subnet" "public" {
   tags = {
     Name        = "public-subnet"
     Environment = var.environment
+    NewTag      = "testing HCP again!"
   }
 }
 
@@ -31,5 +32,6 @@ resource "aws_subnet" "private" {
   tags = {
     Name        = "private-subnet"
     Environment = var.environment
+    NewTag      = "testing HCP once more!"
   }
 }
