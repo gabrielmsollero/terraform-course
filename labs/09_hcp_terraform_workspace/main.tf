@@ -6,6 +6,7 @@ resource "aws_vpc" "main" {
   tags = {
     Name        = "terraform-course"
     Environment = var.environment
+    NewTag      = "testing HCP!"
   }
 }
 
